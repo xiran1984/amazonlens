@@ -1,12 +1,17 @@
 import os
 import pandas as pd
+from openai import OpenAI
+from dotenv import load_dotenv
 
+load_dotenv()
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # ============================================
 # 配置区
 # ============================================
 
+API_KEY    = os.getenv("SILICONFLOW_API_KEY")
+MODEL      = "Qwen/Qwen2.5-7B-Instruct"
 CSV_FILE   = r"Reviews.csv"
 OUTPUT     = "补货决策报告.md"
 TOP_N      = 50    # 分析销量前N名产品
@@ -147,6 +152,34 @@ def generate_report(df: pd.DataFrame) -> str:
 
 
 # ============================================
+# 第五步：AI 总结
+# ============================================
+
+def ai_summarize(report: str) -> str:
+    client = OpenAI(api_key=API_KEY, base_url="https://api.siliconflow.cn/v1")
+    response = client.chat.completions.create(
+        model      = MODEL,
+        max_tokens = 300,
+        messages   = [{
+            "role": "user",
+            "content": f"""
+你是一个亚马逊运营负责人。请把以下补货决策报告压缩成3-5句话的执行摘要。
+要求：
+- 直接说结论，不要废话
+- 包含最重要的数字
+- 重点指出需要“紧急补货”和“计划补货”的产品数量及具体ASIN（如果数量少于3个）
+- 最后一句给出本周最优先的一个补货行动建议
+
+报告内容：
+{report[:3000]}
+"""
+        }]
+    )
+    content = response.choices[0].message.content
+    return content.strip() if content is not None else ""
+
+
+# ============================================
 # 主程序
 # ============================================
 
@@ -159,9 +192,13 @@ def main():
     result_df    = calc_score_trend(df_raw, agg)
     priority_df  = calc_priority(result_df)
     report       = generate_report(priority_df)
+    summary      = ai_summarize(report)
+
+    # 将总结添加到报告头部
+    full_report = f"# 补货决策摘要\n{summary}\n\n---\n\n{report}"
 
     with open(OUTPUT, "w", encoding="utf-8") as f:
-        f.write(report)
+        f.write(full_report)
 
     print(f"\n分析完成，报告已保存至：{OUTPUT}")
     print(f"共分析 {TOP_N} 个热销产品")

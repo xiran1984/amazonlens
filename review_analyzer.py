@@ -12,7 +12,7 @@ API_KEY   = os.getenv("SILICONFLOW_API_KEY")
 MODEL     = "Qwen/Qwen2.5-7B-Instruct"
 OUTPUT    = "分析报告.md"
 CSV_FILE  = r"Reviews.csv"   # 你下载的文件名
-MAX_ROWS  = 50             # 需要分析的行数
+MAX_ROWS  = 10             # 需要分析的行数
 
 # ============================================
 # 核心函数：分析单条 Review
