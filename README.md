@@ -1,2 +1,2 @@
 # amazonlens
-AI-powered Amazon review analyzer
+AI-powered Amazon review,restock analyzer
