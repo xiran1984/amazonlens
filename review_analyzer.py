@@ -8,10 +8,10 @@ from openai import OpenAI
 # 配置区：只需要改这里
 # ============================================
 
-API_KEY   = "sk-ttvxjsfggmbesixuvibjyujixehvdmruprcanomvpahtvszg"
+API_KEY   = os.getenv("SILICONFLOW_API_KEY")
 MODEL     = "Qwen/Qwen2.5-7B-Instruct"
 OUTPUT    = "分析报告.md"
-CSV_FILE  = r"D:\Py code\AmazonLens\Reviews.csv"   # 你下载的文件名
+CSV_FILE  = r"Reviews.csv"   # 你下载的文件名
 MAX_ROWS  = 50             # 需要分析的行数
 
 # ============================================

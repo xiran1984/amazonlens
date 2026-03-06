@@ -7,7 +7,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # 配置区
 # ============================================
 
-CSV_FILE   = r"D:\Py code\AmazonLens\Reviews.csv"
+CSV_FILE   = r"Reviews.csv"
 OUTPUT     = "补货决策报告.md"
 TOP_N      = 50    # 分析销量前N名产品
 RECENT_DAYS = 180  # 只看最近180天的评论趋势
